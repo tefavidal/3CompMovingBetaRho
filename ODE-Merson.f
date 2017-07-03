@@ -195,7 +195,7 @@
       t=t+h
       tau=tau+h
 
-      call UpdateDiscreteCells(h,Nx,Ny,Nc, gamma, ro, beta,cells)
+      call UpdateDiscreteCells(t,h,Nx,Ny,Nc, gamma, ro, beta,cells)
 
       h=dt
 

@@ -218,7 +218,8 @@
 
 
 !     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      subroutine UpdateDiscreteCells(h,Nx,Ny,Nc, gamma, ro,beta, cells)
+      subroutine UpdateDiscreteCells(t,h,Nx,Ny,Nc, gamma, ro,beta,
+     . cells)
 
       implicit none
 
@@ -236,7 +237,7 @@
 
 
       integer Nx, Ny,Nc, i, j, k, oldi, oldj
-      double precision cells(Nc,2)
+      double precision cells(Nc,2), t
       double precision gamma(Nx,Ny), rhogrid(Nx,Ny), betagrid(Nx,Ny)
       double precision beta(Nc), ro(Nc)
       double precision gLaplace(Nx,Ny),xgradeC(Nx,Ny),ygradeC(Nx,Ny)
@@ -257,7 +258,8 @@
         i=ceiling(cells(k,1)/dx)
         j=ceiling(cells(k,2)/dy)
         grad=sqrt(xgradeC(i,j)**2 +ygradeC(i,j)**2)
-        if(rhogrid(i,j) .ge. 0.6 .and. grad .ge. 1.0)then
+        if(rhogrid(i,j) .ge. 0.6 .and. grad .ge. 1.0
+     .   .and. t/dk1 .gt. 50)then
 !          write(6,*) 'Atempt move'
             angle=atan2(ygradeC(i,j),xgradeC(i,j))
             newx=cells(k,1)+h*speed*cos(angle)
