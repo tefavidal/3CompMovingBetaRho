@@ -97,32 +97,54 @@
        do i=1,Nx
 !       No-Flux boundary condition
 !       if(i .eq. 1) then
-       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
-        gammaim2=gamma(i+1,j)
-        gammaim1=gamma(i+1,j)
-        gammaip1=gamma(i+1,j)
+!       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
+!        gammaim2=gamma(i+1,j)
+!        gammaim1=gamma(i+1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!       elseif(i .eq. 2) then
+!        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!!       elseif(i .eq. Nx) then
+!       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
+!        gammaim2=gamma(i-2,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i-1,j)
+!       else
+!        gammaim2=gamma(i-2,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!       endif
 
-!        gammaim2=0
-!        gammaim1=0
+!     Absorving boundary condition
+       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
+        gammaim2=0.0
+        gammaim1=0.0
+        gammaip1=gamma(i+1,j)
 
        elseif(i .eq. 2) then
-        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
+        gammaim2=0.0
         gammaim1=gamma(i-1,j)
         gammaip1=gamma(i+1,j)
-
-!        gammaim2=0
 
 !       elseif(i .eq. Nx) then
        elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
         gammaim2=gamma(i-2,j)
         gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i-1,j)
+        gammaip1=0.0
        else
         gammaim2=gamma(i-2,j)
         gammaim1=gamma(i-1,j)
         gammaip1=gamma(i+1,j)
 
        endif
+
+
+
+
 
 !      Periodic Boundary
 !       if(i .eq. 1) then
@@ -149,21 +171,40 @@
 
 
 !     Non Flux Boundary Cond
+!       if(Ny .eq. 1) then
+!        gammajm1=gamma(i,j)
+!        gammajp1=gamma(i,j)
+!!       elseif(j .eq. 1) then
+!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
+!        gammajm1=gamma(i,j+1)
+!        gammajp1=gamma(i,j+1)
+!!       elseif(j .eq. Ny) then
+!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
+!        gammajp1=gamma(i,j-1)
+!        gammajm1=gamma(i,j-1)
+!       else
+!        gammajp1=gamma(i,j+1)
+!        gammajm1=gamma(i,j-1)
+!       endif
+
+
+!     Absorbing boundary
        if(Ny .eq. 1) then
         gammajm1=gamma(i,j)
         gammajp1=gamma(i,j)
 !       elseif(j .eq. 1) then
        elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
-        gammajm1=gamma(i,j+1)
+        gammajm1=0.0
         gammajp1=gamma(i,j+1)
 !       elseif(j .eq. Ny) then
        elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
-        gammajp1=gamma(i,j-1)
+        gammajp1=0.0
         gammajm1=gamma(i,j-1)
        else
         gammajp1=gamma(i,j+1)
         gammajm1=gamma(i,j-1)
        endif
+
 
 !     Periodic Boundary
 !
