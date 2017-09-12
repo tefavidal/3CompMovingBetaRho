@@ -19,14 +19,30 @@
       double precision beta(Nc),gamma(Nx,Ny),ro(Nc)
       double precision betagrid(Nx,Ny), rhogrid(Nx,Ny)
       double precision betaprime(Nc),gammaprime(Nx,Ny),roprime(Nc)
-      double precision f1,f2,Phi,Y
+      double precision f1,f2,Phi,Y,noise,r1,r2
       double precision gLaplace(Nx,Ny)
       double precision xgradeC(Nx,Ny),ygradeC(Nx,Ny)
       double precision vdx(Nx,Ny),vdy
       double precision gammalist(Nc)
       double precision cells(Nc,2)
       integer grid(Nx,Ny), factor2
-
+  ! ----- variables for portable seed setting -----
+!      INTEGER :: i_seed
+!      INTEGER, DIMENSION(:), ALLOCATABLE :: a_seed
+!      INTEGER, DIMENSION(1:8) :: dt_seed
+!  ! ----- end of variables for seed setting -----
+!
+! ! ----- Set up random seed portably -----
+!      CALL RANDOM_SEED(size=i_seed)
+!      ALLOCATE(a_seed(1:i_seed))
+!      CALL RANDOM_SEED(get=a_seed)
+!      CALL DATE_AND_TIME(values=dt_seed)
+!      a_seed(i_seed)=dt_seed(8); a_seed(1)=dt_seed(8)*dt_seed(7)
+!     .*dt_seed(6)
+!!       write(6,*) 'seed=',a_seed(i_seed)
+!      CALL RANDOM_SEED(put=a_seed)
+!      DEALLOCATE(a_seed)
+  ! ----- Done setting up random seed ----
 
 
       call functionLap(Nx,Ny,gamma,gLaplace,xgradeC,ygradeC)
@@ -45,9 +61,13 @@
         endif
         vdy=0.0
 !       Right hand side
+!        call random_number(r1)
+!        call random_number(r2)
+!        noise=sqrt(-2*log(r1))*cos(2*Pi*r2);
         gammaprime(i,j)=factor/depsilon*s2*betagrid(i,j)
      .             -1.0*gamma(i,j)/depsilon
      .                  +depsilon*gLaplace(i,j)
+!     .                  +abs(noise)*0.1
 !     .          -  (vdx(i,j)*xgradeC(i,j))
 
        enddo
@@ -96,14 +116,37 @@
       do j=1,Ny
        do i=1,Nx
 !       No-Flux boundary condition
-!       if(i .eq. 1) then
+       if(i .eq. 1) then
 !       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
-!        gammaim2=gamma(i+1,j)
-!        gammaim1=gamma(i+1,j)
+        gammaim2=gamma(i+1,j)
+        gammaim1=gamma(i+1,j)
+        gammaip1=gamma(i+1,j)
+
+       elseif(i .eq. 2) then
+        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(i+1,j)
+
+       elseif(i .eq. Nx) then
+!       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
+        gammaim2=gamma(i-2,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(i-1,j)
+       else
+        gammaim2=gamma(i-2,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(i+1,j)
+
+       endif
+
+!     Absorving boundary condition
+!       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
+!        gammaim2=0.0
+!        gammaim1=0.0
 !        gammaip1=gamma(i+1,j)
 !
 !       elseif(i .eq. 2) then
-!        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
+!        gammaim2=0.0
 !        gammaim1=gamma(i-1,j)
 !        gammaip1=gamma(i+1,j)
 !
@@ -111,36 +154,13 @@
 !       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
 !        gammaim2=gamma(i-2,j)
 !        gammaim1=gamma(i-1,j)
-!        gammaip1=gamma(i-1,j)
+!        gammaip1=0.0
 !       else
 !        gammaim2=gamma(i-2,j)
 !        gammaim1=gamma(i-1,j)
 !        gammaip1=gamma(i+1,j)
 !
 !       endif
-
-!     Absorving boundary condition
-       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
-        gammaim2=0.0
-        gammaim1=0.0
-        gammaip1=gamma(i+1,j)
-
-       elseif(i .eq. 2) then
-        gammaim2=0.0
-        gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i+1,j)
-
-!       elseif(i .eq. Nx) then
-       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
-        gammaim2=gamma(i-2,j)
-        gammaim1=gamma(i-1,j)
-        gammaip1=0.0
-       else
-        gammaim2=gamma(i-2,j)
-        gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i+1,j)
-
-       endif
 
 
 
@@ -171,39 +191,39 @@
 
 
 !     Non Flux Boundary Cond
-!       if(Ny .eq. 1) then
-!        gammajm1=gamma(i,j)
-!        gammajp1=gamma(i,j)
-!!       elseif(j .eq. 1) then
-!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
-!        gammajm1=gamma(i,j+1)
-!        gammajp1=gamma(i,j+1)
-!!       elseif(j .eq. Ny) then
-!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
-!        gammajp1=gamma(i,j-1)
-!        gammajm1=gamma(i,j-1)
-!       else
-!        gammajp1=gamma(i,j+1)
-!        gammajm1=gamma(i,j-1)
-!       endif
-
-
-!     Absorbing boundary
        if(Ny .eq. 1) then
         gammajm1=gamma(i,j)
         gammajp1=gamma(i,j)
-!       elseif(j .eq. 1) then
-       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
-        gammajm1=0.0
+       elseif(j .eq. 1) then
+!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
+        gammajm1=gamma(i,j+1)
         gammajp1=gamma(i,j+1)
-!       elseif(j .eq. Ny) then
-       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
-        gammajp1=0.0
+       elseif(j .eq. Ny) then
+!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
+        gammajp1=gamma(i,j-1)
         gammajm1=gamma(i,j-1)
        else
         gammajp1=gamma(i,j+1)
         gammajm1=gamma(i,j-1)
        endif
+
+
+!     Absorbing boundary
+!       if(Ny .eq. 1) then
+!        gammajm1=gamma(i,j)
+!        gammajp1=gamma(i,j)
+!!       elseif(j .eq. 1) then
+!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
+!        gammajm1=0.0
+!        gammajp1=gamma(i,j+1)
+!!       elseif(j .eq. Ny) then
+!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
+!        gammajp1=0.0
+!        gammajm1=gamma(i,j-1)
+!       else
+!        gammajp1=gamma(i,j+1)
+!        gammajm1=gamma(i,j-1)
+!       endif
 
 
 !     Periodic Boundary
@@ -292,7 +312,7 @@
      . ,rhogrid)
 
 
-        speed=0.05/sqrt(dke0*0.024)
+        speed=0.02/sqrt(dke0*0.024)
 !        speed=0.0;
 
       do k= 1,Nc
@@ -300,7 +320,7 @@
         j=ceiling(cells(k,2)/dy)
         grad=sqrt(xgradeC(i,j)**2 +ygradeC(i,j)**2)
         if(rhogrid(i,j) .ge. 0.6 .and. grad .ge. 1.0
-     .   .and. t/dk1 .gt. 50)then
+     .   .and. t/dk1 .gt. 100)then
 !          write(6,*) 'Atempt move'
             angle=atan2(ygradeC(i,j),xgradeC(i,j))
             newx=cells(k,1)+h*speed*cos(angle)

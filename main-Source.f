@@ -6,8 +6,12 @@
       INTEGER, PARAMETER :: Nx=200
       INTEGER, PARAMETER :: Ny=200
 !           ONE PILLAR 40 PERCENT
-      INTEGER, PARAMETER :: Nc=15878
+!      INTEGER, PARAMETER :: Nc=15878
+!           ONE PILLAR 35 PERCENT
+!      INTEGER, PARAMETER :: Nc=13893
 
+!           ONE PILLAR 30 PERCENT
+      INTEGER, PARAMETER :: Nc=11908
 !     Nc decided as (Nx*Ny-Pillars)*percentageofcells
 
       double precision dL1,dL2,dk,dc,dalpha,depsilon,depsilonp,

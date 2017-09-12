@@ -26,11 +26,17 @@
       integer grid(Nx,Ny)
       integer factor
 
-!     %%%%%Without Initial State
+!     %%%%% Initial State for ke=9.5 sigma=0.55
+!         nfix=1
+!         gamma0(1)=0.006
+!         beta0(1)=0.3167
+!         ro0(1)=0.8953
+
+!     %%%%% Initial State for ke=7.0 sigma=0.55
          nfix=1
-         gamma0(1)=0.006
-         beta0(1)=0.3167
-         ro0(1)=0.8953
+         gamma0(1)=0.359
+         beta0(1)=13.91
+         ro0(1)=0.285
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       do i=1,nfix
       write(6,*)  'gamma=',gamma0(i),'  beta=',beta0(i),'  ro=',ro0(i)
@@ -54,27 +60,27 @@
       enddo
 
 !%%%%%%%%%%%%%%%%%Adding perturbation at the center
-      do j=1,Ny
-         do i=1,Nx
-!            if(((i-(Nx/4))*(i-(Nx/4))+(j-(Ny/4))*(j-(Ny/4)))
+!      do j=1,Ny
+!         do i=1,Nx
+!!            if(((i-(Nx/4))*(i-(Nx/4))+(j-(Ny/4))*(j-(Ny/4)))
+!!     .       .le. 25)then
+!
+!            if(((i-(2*Nx/5))*(i-(2*Nx/5))+(j-(2*Ny/5))*(j-(2*Ny/5)))
 !     .       .le. 25)then
-
-            if(((i-(2*Nx/5))*(i-(2*Nx/5))+(j-(2*Ny/5))*(j-(2*Ny/5)))
-     .       .le. 25)then
-
-!            if(((i-(Nx/2))*(i-(Nx/2))+(j-(Ny/2))*(j-(Ny/2)))
-!     .       .le. 25)then
-
-
-               if(grid(i,j) .gt. 0.5)then
-                  factor=1.0
-               else
-                  factor=0.0
-               endif
-               gamma(i,j)=factor*(gamma0(1)+3)
-            endif
-         enddo
-      enddo
+!
+!!            if(((i-(Nx/2))*(i-(Nx/2))+(j-(Ny/2))*(j-(Ny/2)))
+!!     .       .le. 25)then
+!
+!
+!               if(grid(i,j) .gt. 0.5)then
+!                  factor=1.0
+!               else
+!                  factor=0.0
+!               endif
+!               gamma(i,j)=factor*(gamma0(1)+3)
+!            endif
+!         enddo
+!      enddo
 
 
 

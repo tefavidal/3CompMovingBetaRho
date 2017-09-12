@@ -83,7 +83,8 @@
 
 !     %%%%% Random positions one cell per grid point %%%%%%%%%%
 
- 20   call initialDiscreteDistribution(Nx,Ny,Nc,cells)
+! 20   call initialDiscreteDistribution(Nx,Ny,Nc,cells)
+ 20   call initialHigherAroundPillarDistribution(Nx,Ny,Nc,cells)
       call ic(t,Nx,Ny,Nc,beta,gamma,ro,cells)
 
 
