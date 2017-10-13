@@ -2,7 +2,7 @@
      . roprime,cells,vdx)
 
       implicit none
-      double precision t, factor, aux
+      double precision t, factor, aux, factor2
       integer Nx, Ny, i, j,ID, Nc
       double precision dL1,dL2,dk,dc,dalpha,depsilon,depsilonp,
      .               dlambda1,dlambda2,s1,s2,vd,tend,tout,dt,tE,
@@ -25,7 +25,7 @@
       double precision vdx(Nx,Ny),vdy
       double precision gammalist(Nc)
       double precision cells(Nc,2)
-      integer grid(Nx,Ny), factor2
+      integer grid(Nx,Ny)
   ! ----- variables for portable seed setting -----
 !      INTEGER :: i_seed
 !      INTEGER, DIMENSION(:), ALLOCATABLE :: a_seed
@@ -59,13 +59,20 @@
         else
             factor=0.0
         endif
+
+        if(grid(i,j) .lt. -0.5)then
+            factor2=0.5
+        else
+            factor2=1.0
+        endif
+
         vdy=0.0
 !       Right hand side
 !        call random_number(r1)
 !        call random_number(r2)
 !        noise=sqrt(-2*log(r1))*cos(2*Pi*r2);
         gammaprime(i,j)=factor/depsilon*s2*betagrid(i,j)
-     .             -1.0*gamma(i,j)/depsilon
+     .             -factor2*gamma(i,j)/depsilon
      .                  +depsilon*gLaplace(i,j)
 !     .                  +abs(noise)*0.1
 !     .          -  (vdx(i,j)*xgradeC(i,j))
@@ -116,28 +123,28 @@
       do j=1,Ny
        do i=1,Nx
 !       No-Flux boundary condition
-       if(i .eq. 1) then
-!       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
-        gammaim2=gamma(i+1,j)
-        gammaim1=gamma(i+1,j)
-        gammaip1=gamma(i+1,j)
-
-       elseif(i .eq. 2) then
-        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
-        gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i+1,j)
-
-       elseif(i .eq. Nx) then
-!       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
-        gammaim2=gamma(i-2,j)
-        gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i-1,j)
-       else
-        gammaim2=gamma(i-2,j)
-        gammaim1=gamma(i-1,j)
-        gammaip1=gamma(i+1,j)
-
-       endif
+!       if(i .eq. 1) then
+!!       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
+!        gammaim2=gamma(i+1,j)
+!        gammaim1=gamma(i+1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!       elseif(i .eq. 2) then
+!        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!       elseif(i .eq. Nx) then
+!!       elseif(i .eq. Nx .or. grid(i+1,j) .le. -0.5) then
+!        gammaim2=gamma(i-2,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i-1,j)
+!       else
+!        gammaim2=gamma(i-2,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i+1,j)
+!
+!       endif
 
 !     Absorving boundary condition
 !       if(i .eq. 1 .or. grid(i-1,j) .le. -0.5) then
@@ -167,45 +174,52 @@
 
 
 !      Periodic Boundary
-!       if(i .eq. 1) then
-!        gammaim2=gamma(Nx-1,j)
-!        gammaim1=gamma(Nx,j)
-!        gammaip1=gamma(2,j)
-!
-!       elseif(i .eq. 2) then
-!        gammaim2=gamma(Nx,j)
+       if(i .eq. 1) then
+        gammaim2=gamma(Nx-1,j)
+        gammaim1=gamma(Nx,j)
+        gammaip1=gamma(2,j)
+
+       elseif(i .eq. 2) then
+        gammaim2=gamma(Nx,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(i+1,j)
+
+
+       elseif(i .eq. Nx) then
+        gammaim2=gamma(i-2,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(1,j)
+
+!       elseif(grid(i+1,j) .le. -0.5)then
 !        gammaim1=gamma(i-1,j)
+!        gammaip1=1.0
+!       elseif(grid(i-1,j) .le. -0.5)then
+!        gammaim1=1.0
 !        gammaip1=gamma(i+1,j)
-!
-!
-!       elseif(i .eq. Nx) then
-!        gammaim2=gamma(i-2,j)
-!        gammaim1=gamma(i-1,j)
-!        gammaip1=gamma(1,j)
-!       else
-!        gammaim2=gamma(i-2,j)
-!        gammaim1=gamma(i-1,j)
-!        gammaip1=gamma(i+1,j)
-!
-!       endif
+       else
+        gammaim2=gamma(i-2,j)
+        gammaim1=gamma(i-1,j)
+        gammaip1=gamma(i+1,j)
+
+       endif
 
 
 !     Non Flux Boundary Cond
-       if(Ny .eq. 1) then
-        gammajm1=gamma(i,j)
-        gammajp1=gamma(i,j)
-       elseif(j .eq. 1) then
-!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
-        gammajm1=gamma(i,j+1)
-        gammajp1=gamma(i,j+1)
-       elseif(j .eq. Ny) then
-!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
-        gammajp1=gamma(i,j-1)
-        gammajm1=gamma(i,j-1)
-       else
-        gammajp1=gamma(i,j+1)
-        gammajm1=gamma(i,j-1)
-       endif
+!       if(Ny .eq. 1) then
+!        gammajm1=gamma(i,j)
+!        gammajp1=gamma(i,j)
+!       elseif(j .eq. 1) then
+!!       elseif(j .eq. 1 .or. grid(i,j-1) .le. -0.5) then
+!        gammajm1=gamma(i,j+1)
+!        gammajp1=gamma(i,j+1)
+!       elseif(j .eq. Ny) then
+!!       elseif(j .eq. Ny .or. grid(i,j+1) .le. -0.5) then
+!        gammajp1=gamma(i,j-1)
+!        gammajm1=gamma(i,j-1)
+!       else
+!        gammajp1=gamma(i,j+1)
+!        gammajm1=gamma(i,j-1)
+!       endif
 
 
 !     Absorbing boundary
@@ -228,19 +242,25 @@
 
 !     Periodic Boundary
 !
-!       if(Ny .eq. 1) then
-!        gammajm1=gamma(i,j)
-!        gammajp1=gamma(i,j)
-!       elseif(j .eq. 1) then
-!        gammajm1=gamma(i,Ny)
+       if(Ny .eq. 1) then
+        gammajm1=gamma(i,j)
+        gammajp1=gamma(i,j)
+       elseif(j .eq. 1) then
+        gammajm1=gamma(i,Ny)
+        gammajp1=gamma(i,j+1)
+       elseif(j .eq. Ny) then
+        gammajp1=gamma(i,1)
+        gammajm1=gamma(i,j-1)
+!       elseif(grid(i,j-1) .le. -0.5) then
 !        gammajp1=gamma(i,j+1)
-!       elseif(j .eq. Ny) then
-!        gammajp1=gamma(i,1)
+!        gammajm1=1.0
+!       elseif(grid(i,j+1) .le. -0.5) then
+!        gammajp1=1.0
 !        gammajm1=gamma(i,j-1)
-!       else
-!        gammajp1=gamma(i,j+1)
-!        gammajm1=gamma(i,j-1)
-!       endif
+       else
+        gammajp1=gamma(i,j+1)
+        gammajm1=gamma(i,j-1)
+       endif
 
 
         gLapX=(gammaip1+gammaim1-2*gamma(i,j))/(dx**2)
@@ -320,7 +340,7 @@
         j=ceiling(cells(k,2)/dy)
         grad=sqrt(xgradeC(i,j)**2 +ygradeC(i,j)**2)
         if(rhogrid(i,j) .ge. 0.6 .and. grad .ge. 1.0
-     .   .and. t/dk1 .gt. 100)then
+     .   .and. t/dk1 .gt. 50)then
 !          write(6,*) 'Atempt move'
             angle=atan2(ygradeC(i,j),xgradeC(i,j))
             newx=cells(k,1)+h*speed*cos(angle)

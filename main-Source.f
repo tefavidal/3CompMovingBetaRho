@@ -5,13 +5,27 @@
 
       INTEGER, PARAMETER :: Nx=200
       INTEGER, PARAMETER :: Ny=200
+
+!           ZERO PILLAR 35 PERCENT
+!      INTEGER, PARAMETER :: Nc=14000
+
 !           ONE PILLAR 40 PERCENT
 !      INTEGER, PARAMETER :: Nc=15878
 !           ONE PILLAR 35 PERCENT
 !      INTEGER, PARAMETER :: Nc=13893
 
 !           ONE PILLAR 30 PERCENT
-      INTEGER, PARAMETER :: Nc=11908
+!      INTEGER, PARAMETER :: Nc=11908
+
+!         FOUR PILLARS   40 PERCENT
+!      INTEGER, PARAMETER :: Nc=15512
+
+!         FOUR PILLARS   35 PERCENT
+      INTEGER, PARAMETER :: Nc=13573
+
+!         FOUR PILLARS   30 PERCENT
+!      INTEGER, PARAMETER :: Nc=11634
+
 !     Nc decided as (Nx*Ny-Pillars)*percentageofcells
 
       double precision dL1,dL2,dk,dc,dalpha,depsilon,depsilonp,

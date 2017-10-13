@@ -5,7 +5,7 @@
 4.d3       1.d0         1.d-2        dq,depsilono,dlambda
 0.55d0    1.d-2        3.d0         dsigma0,dtheta,dalpha
 0.0d0                                Vmax
-200.0d0    0.1d0         5.d-3        tend,tout,dt
+150.0d0    0.1d0         5.d-3        tend,tout,dt
 3.d-1                                amplit
 1.d-3        0.001                   tol,prob
 50        100      3.14159265d0      isf,itstart,pi
