@@ -183,9 +183,9 @@
             j=ceiling(cells(k,2)/dy)
         endif
 
-        betagrid(i,j)=beta(k)
+        betagrid(i,j)=betagrid(i,j)+beta(k)
         grid(i,j)=grid(i,j)+1
-        rhogrid(i,j)=ro(k)
+        rhogrid(i,j)=rhogrid(i,j)+ro(k)
       enddo
 
       return
