@@ -39,7 +39,7 @@
       close(8)
 
 !     Km changes
-      Km=2.0
+      Km=1.0
       dq=dq*Km
       dsigma0=dsigma0/Km
       dalpha=dalpha/Km

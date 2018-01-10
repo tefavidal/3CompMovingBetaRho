@@ -114,7 +114,8 @@
             r2=(i-x0)*(i-x0)*dx*dx + (j-y1)*(j-y1)*dy*dy
             r3=(i-x1)*(i-x1)*dx*dx + (j-y0)*(j-y0)*dy*dy
        if (r0 .le. r .or. r1 .le. r .or.r2 .le. r .or. r3 .le. r) then
-                percentage=2.0*real(Nc)/(real(Nx)*real(Ny))
+!                percentage=1.5*real(Nc)/(real(Nx)*real(Ny))
+                percentage=0.8
             else
                 percentage=real(Nc)/(real(Nx)*real(Ny))
             endif
