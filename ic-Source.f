@@ -55,6 +55,10 @@
       enddo
 
       do i=1,Nc
+        if(cells(i,1) .lt. 0 .and. cells(i,2) .lt. 0)then
+         ro(i)=0.0
+         beta(i)=0.0
+        endif
          ro(i)=ro0(1)
          beta(i)=beta0(1)
       enddo

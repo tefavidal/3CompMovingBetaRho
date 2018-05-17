@@ -18,7 +18,7 @@
 
       double precision beta(Nc),gamma(Nx,Ny),ro(Nc)
       double precision dh,tEprime,dk2,dki,dkt,dq,depsilono,dlambda
-      double precision dtheta,Vmax,tendprime,toutprime,dtprime,Km
+      double precision dtheta,Vmax,tendprime,toutprime,dtprime,Km,d
       double precision cells(Nc,2)
 
       open(8,file = 'startdata',status = 'unknown', form = 'formatted')
@@ -34,12 +34,12 @@
       read(8,*) tendprime,toutprime,dtprime
       read(8,*) amplit
       read(8,*) tol,prob
-      read(8,*) isf,itstart,pi
+      read(8,*) d,itstart,pi
 
       close(8)
 
 !     Km changes
-      Km=1.0
+      Km=1.00
       dq=dq*Km
       dsigma0=dsigma0/Km
       dalpha=dalpha/Km
@@ -72,6 +72,10 @@
        dx=0.05*dk1/(dke0*Diffgamma)**0.5
        dy=0.05*dk1/(dke0*Diffgamma)**0.5
 
+!       dx=0.01*dk1/(dke0*Diffgamma)**0.5
+!       dy=0.01*dk1/(dke0*Diffgamma)**0.5
+
+
       write(6,*)'dimensionless dx=', dx
       write(6,*)'dimensionless dy=', dy
 
@@ -91,6 +95,7 @@
 !     %%%%% Random positions one cell per grid point %%%%%%%%%%
 
  20   call initialDiscreteDistribution(Nx,Ny,Nc,cells)
+! 20   call initialCenterIsland(Nx,Ny,Nc,cells,d)
 ! 20   call initialHigherAroundPillarDistribution(Nx,Ny,Nc,cells)
       call ic(t,Nx,Ny,Nc,beta,gamma,ro,cells)
 

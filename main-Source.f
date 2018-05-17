@@ -9,6 +9,12 @@
 !           ZERO PILLAR 35 PERCENT
 !      INTEGER, PARAMETER :: Nc=14000
 
+!           ZERO PILLAR 40 PERCENT
+      INTEGER, PARAMETER :: Nc=16000
+
+!           ZERO PILLAR 50 PERCENT
+!      INTEGER, PARAMETER :: Nc=8000
+
 !           ONE PILLAR 40 PERCENT
 !      INTEGER, PARAMETER :: Nc=15878
 !           ONE PILLAR 35 PERCENT
@@ -18,7 +24,10 @@
 !      INTEGER, PARAMETER :: Nc=11908
 
 !         FOUR PILLARS   70 PERCENT
-      INTEGER, PARAMETER :: Nc=27146
+!      INTEGER, PARAMETER :: Nc=27146
+
+!         FOUR PILLARS   60 PERCENT
+!      INTEGER, PARAMETER :: Nc=23268
 
 !         FOUR PILLARS   50 PERCENT
 !      INTEGER, PARAMETER :: Nc=19390
@@ -31,6 +40,8 @@
 
 !         FOUR PILLARS   30 PERCENT
 !      INTEGER, PARAMETER :: Nc=11634
+
+!      INTEGER, PARAMETER :: Nc=5000
 
 !     Nc decided as (Nx*Ny-Pillars)*percentageofcells
 

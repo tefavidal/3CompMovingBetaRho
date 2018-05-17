@@ -100,6 +100,9 @@
        call Pillars(Nx,Ny,d,grid)
 
       do k=1,Nc
+        if(cells(k,1) .lt. 0 .and. cells(k,2) .lt. 0)then
+           cycle
+        endif
         i=ceiling(cells(k,1)/dx)
         j=ceiling(cells(k,2)/dy)
         if(i .gt.Nx)then
@@ -161,6 +164,9 @@
        call Pillars(Nx,Ny,d,grid)
 
       do k=1,Nc
+        if(cells(k,1) .lt. 0 .and. cells(k,2) .lt. 0)then
+           cycle
+        endif
         i=ceiling(cells(k,1)/dx)
         j=ceiling(cells(k,2)/dy)
         if(i .gt.Nx)then
@@ -214,6 +220,9 @@
 
 
       do k=1,Nc
+        if(cells(k,1) .lt. 0 .and. cells(k,2) .lt. 0)then
+           cycle
+        endif
         i=ceiling(cells(k,1)/dx)
         j=ceiling(cells(k,2)/dy)
         if(i .gt.Nx)then

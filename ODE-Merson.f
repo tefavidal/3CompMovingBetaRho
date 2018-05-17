@@ -167,12 +167,12 @@
          enddo
       enddo
 
-      do i=1,Nc
-         err=max(abs(b1(i)),abs(r1(i)))
-         if (beta(i) .lt. 0 .or. ro(i) .lt. 0)then
-            index=1
-         endif
-      enddo
+!      do i=1,Nc
+!         err=max(abs(b1(i)),abs(r1(i)))
+!         if (beta(i) .lt. 0 .or. ro(i) .lt. 0)then
+!            index=1
+!         endif
+!      enddo
 
 
 

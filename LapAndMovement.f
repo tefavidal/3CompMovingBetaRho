@@ -27,31 +27,46 @@
        do i=1,Nx
 !%%%%%%%%%%%%%%%%%%%%%%      Periodic Boundary
 !%%%%%%%% System Boundaries
+!       if(i .eq. 1) then
+!        gammaim2=gamma(Nx-1,j)
+!        gammaim1=gamma(Nx,j)
+!        gammaip1=gamma(2,j)
+!       elseif(i .eq. 2) then
+!        gammaim2=gamma(Nx,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(i+1,j)
+!       elseif(i .eq. Nx) then
+!        gammaim2=gamma(i-2,j)
+!        gammaim1=gamma(i-1,j)
+!        gammaip1=gamma(1,j)
+
+!%%%%%%%%%%%%%%%%%%%%%%      No-Flux Boundary
+!%%%%%%%% System Boundaries
        if(i .eq. 1) then
-        gammaim2=gamma(Nx-1,j)
-        gammaim1=gamma(Nx,j)
-        gammaip1=gamma(2,j)
+        gammaim2=gamma(i+1,j)
+        gammaim1=gamma(i+1,j)
+        gammaip1=gamma(i+1,j)
        elseif(i .eq. 2) then
-        gammaim2=gamma(Nx,j)
+        gammaim2=-gamma(i,j)+2*gamma(i-1,j)
         gammaim1=gamma(i-1,j)
         gammaip1=gamma(i+1,j)
        elseif(i .eq. Nx) then
         gammaim2=gamma(i-2,j)
         gammaim1=gamma(i-1,j)
-        gammaip1=gamma(1,j)
+        gammaip1=gamma(i-1,j)
 
 !%%%%%%%% Pillar Boundaries
 
        elseif(grid(i+1,j) .le. -0.5 .and. grid(i-1,j) .le. -0.5)then
-        gammaim1=0.2
-        gammaip1=0.2
+        gammaim1=0.0
+        gammaip1=0.0
        elseif(grid(i+1,j) .le. -0.5)then
         gammaim1=gamma(i-1,j)
-!        gammaip1=gamma(i-1,j)
-        gammaip1=0.2
+        gammaip1=gamma(i-1,j)
+!        gammaip1=0.0
        elseif(grid(i-1,j) .le. -0.5)then
-!        gammaim1=gamma(i+1,j)
-        gammaim1=0.2
+        gammaim1=gamma(i+1,j)
+!        gammaim1=0.0
         gammaip1=gamma(i+1,j)
 
 
@@ -65,29 +80,40 @@
 
 !%%%%%%%%%%%%%%%%%%%%%%      Periodic Boundary
 !%%%%%%%% System Boundaries
-!
+!       if(Ny .eq. 1) then
+!        gammajm1=gamma(i,j)
+!        gammajp1=gamma(i,j)
+!       elseif(j .eq. 1) then
+!        gammajm1=gamma(i,Ny)
+!        gammajp1=gamma(i,j+1)
+!       elseif(j .eq. Ny) then
+!        gammajp1=gamma(i,1)
+!        gammajm1=gamma(i,j-1)
+
+!%%%%%%%%%%%%%%%%%%%%%%      No-Flux Boundary
+!%%%%%%%% System Boundaries
        if(Ny .eq. 1) then
         gammajm1=gamma(i,j)
         gammajp1=gamma(i,j)
        elseif(j .eq. 1) then
-        gammajm1=gamma(i,Ny)
+        gammajm1=gamma(i,j+1)
         gammajp1=gamma(i,j+1)
        elseif(j .eq. Ny) then
-        gammajp1=gamma(i,1)
+        gammajp1=gamma(i,j-1)
         gammajm1=gamma(i,j-1)
 
 !%%%%%%%% Pillar Boundaries
 !
        elseif(grid(i,j-1) .le. -0.5 .and. grid(i,j+1) .le. -0.5) then
-        gammajp1=0.2
-        gammajm1=0.2
+        gammajp1=0.0
+        gammajm1=0.0
        elseif(grid(i,j-1) .le. -0.5) then
         gammajp1=gamma(i,j+1)
-!        gammajm1=gamma(i,j+1)
-        gammajm1=0.2
+        gammajm1=gamma(i,j+1)
+!        gammajm1=0.0
        elseif(grid(i,j+1) .le. -0.5) then
-!        gammajp1=gamma(i,j-1)
-        gammajp1=0.2
+        gammajp1=gamma(i,j-1)
+!        gammajp1=0.0
         gammajm1=gamma(i,j-1)
 
 
@@ -173,8 +199,11 @@
         i=ceiling(cells(k,1)/dx)
         j=ceiling(cells(k,2)/dy)
         grad=sqrt(xgradeC(i,j)**2 +ygradeC(i,j)**2)
-        if(rhogrid(i,j) .ge. 0.6 .and. grad .ge. 1.0
-     .   .and. t/dk1 .gt. 100)then
+        if(ro(k) .ge. 0.6 .and. grad .ge. 1.0
+     .   .and. t/dk1 .gt. 50)then
+!        grad=sqrt(xgradeC(i,j)**2 +ygradeC(i,j)**2)*dx
+!        if(rhogrid(i,j) .ge. 0.1 .and. grad .ge. 0.013
+!     .   .and. t/dk1 .gt. 50)then
 !          write(6,*) 'Atempt move'
             angle=atan2(ygradeC(i,j),xgradeC(i,j))
             newx=cells(k,1)+h*speed*cos(angle)
@@ -208,12 +237,12 @@
                         j=ceiling(newy/dy)
                     endif
 
-                    if(grid(i,j) .eq. 0) then
+                if(grid(i,j) .lt. 5 .and. grid(i,j) .ge. 0) then
 !                  write(6,*) 'Actual move'
                         cells(k,1)=newx
                         cells(k,2)=newy
-                        grid(i,j)=1
-                        grid(oldi,oldj)=0
+                        grid(i,j)=grid(i,j)+1
+                        grid(oldi,oldj)=grid(oldi,oldj)-1
                     endif
             endif
 
